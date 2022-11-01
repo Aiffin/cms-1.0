@@ -1,7 +1,10 @@
+const {StatusCodes} = require('http-status-codes')
+const User = require('../model/userModel')
 const userController ={
     getAll:async(req,res)=>{
         try{
-            res.json({msg:"get  "})
+            const users = await User.find({})
+            res.json({users,length:users.length})
         }catch(err){
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({msg:err.message})
         }},
