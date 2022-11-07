@@ -3,6 +3,8 @@ const User = require('../model/userModel')
 const bcrypt = require('bcryptjs')
 const {createAccessToken} = require('../util/token')
 const jwt = require('jsonwebtoken')
+const regTemplate =require('../template/regTemplate')
+const sendMail = require('../middleware/mail')
 
 const authController = {
     register:async(req,res)=>{
@@ -18,6 +20,10 @@ const authController = {
                 mobile,
                 password:encPassword
             })
+
+            const template =regTemplate(name,email)
+            const subject =`Confirmation or registration with cms-v1-0`
+            await sendMail(email,subject,template)
 
             res.status(StatusCodes.OK).json({msg:"User registered successfully",data:newUser})
 

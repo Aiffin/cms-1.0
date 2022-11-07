@@ -10,7 +10,7 @@ const auth = async(req,res,next)=>{
         jwt.verify(token,process.env.TOKEN_SECRET,(err,user)=>{
             if(err)
                 return res.status(StatusCodes.BAD_REQUEST).json({msg:"Token required"})
-
+            
            req.user=user
            next()//forwarding response to the nextcontroller
         })
