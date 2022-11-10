@@ -1,18 +1,99 @@
-import React from 'react'
-import {NavLink} from 'react-router-dom'
+import axios from 'axios';
+import React,{useContext} from 'react'
+import {NavLink, useNavigate} from 'react-router-dom'
+import { toast } from 'react-toastify';
+import {DataContext} from '../../GlobalContext'
 
 function Menu() {
+    const context = useContext(DataContext)
+
+    const [isLogged,setIsLogged]=context.data.authApi.isLogged;
+    const [isAdmin,setIsAdmin]=context.data.authApi.isAdmin;
+    const [isStudent,setIsStudent]=context.data.authApi.isStudent;
+    const [isTrainer,setIsTrainer]=context.data.authApi.isTrainer;
+    const [currentUser]=context.data.authApi.currentUser
+
+    const navigate =useNavigate()
+
+    const logoutUser=async()=>{
+        if(window.confirm(`Are you sure to logout`)){
+            const res =await axios.get(`/api/v1/auth/logout`);
+            localStorage.clear();
+            if(isAdmin) setIsAdmin(false)
+            if(isStudent) setIsStudent(false)
+            if(isTrainer) setIsTrainer(false)
+            setIsLogged(false)
+            toast.success(res.data.msg)
+            window.location.href = "/"
+        }else{
+            return;
+        }
+    }
+
+    //common route
+    const commonRoute=()=>{
+    return(
+    <ul className="navbar-nav">
+        <li className="nav-item dropdown">
+            <NavLink to='#' className="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                Account
+            </NavLink>
+            <ul className="dropdown-menu">
+                <li>
+                    {
+                        isAdmin ? <NavLink to={`/admin/profile`} className="dropdown-item">Profile</NavLink>:null
+                    }
+                    {
+                        isStudent ? <NavLink to={`/student/profile`} className="dropdown-item">Profile</NavLink>:null
+                    }
+                    {
+                        isTrainer ? <NavLink to={`/trainer/profile`} className="dropdown-item">Profile</NavLink>:null
+                    }
+                </li>
+                <li>
+                    {
+                        isAdmin ? <NavLink to={`/admin/dashboard`} className="dropdown-item">Dashboard</NavLink>:null
+                    }
+                    {
+                        isStudent ? <NavLink to={`/student/dashboard`} className="dropdown-item">Dashboard</NavLink>:null
+                    }
+                    {
+                        isTrainer ? <NavLink to={`/trainer/dashboard`} className="dropdown-item">Dashboard</NavLink>:null
+                    }
+                </li>
+                <li className='dropdown-divider'></li>
+                <li>
+                    <NavLink to={`/`} onClick={logoutUser} className="dropdown-item text-white">Logout</NavLink>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    )}
+
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-secondary">
         <div className="container">
-            <NavLink className="navbar-brand">CMS-V1.0</NavLink>
+            <NavLink to={`/`} className="navbar-brand">
+                {
+                    isLogged ? (
+                        <React.Fragment>
+                             {isAdmin ? "Admin CMS-V1.0":null}
+                            {isStudent ? "Student CMS-V1.0":null}
+                            {isTrainer ? "Trainer CMS-V1.0":null}
+                        </React.Fragment>
+                    ):"CMS-V1.0"
+                }
+               
+                </NavLink>
 
             <button className="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
                 <span className="navbar-toggler-icon"></span>
             </button>
 
             <div className="collapse navbar-collapse justify-content-between" id="menu">
-                <ul className="navbar-nav">
+                {
+                    isLogged ? null : (
+                        <ul className="navbar-nav">
                     <li className="nav-item">
                         <NavLink to={`/`} className="nav-link">Home</NavLink>
                     </li>
@@ -23,15 +104,24 @@ function Menu() {
                         <NavLink to={`/contact`} className="nav-link">Contact</NavLink>
                     </li>
                 </ul>
+                    )
+                }
+                {
+                    isLogged ? commonRoute() : (
+                        
+                        <ul className="navbar-nav">
+                        <li className="nav-item">
+                            <NavLink to={`/login`} className="nav-link">Login</NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink to={`/register`} className="nav-link">Register</NavLink>
+                        </li>
+                    </ul>
+                    )
+                }
+                
 
-                <ul className="navbar-nav">
-                    <li className="nav-item">
-                        <NavLink to={`/login`} className="nav-link">Login</NavLink>
-                    </li>
-                    <li className="nav-item">
-                        <NavLink to={`/register`} className="nav-link">Register</NavLink>
-                    </li>
-                </ul>
+                
             </div>
         </div>
     </nav>

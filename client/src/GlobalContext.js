@@ -15,7 +15,7 @@ function DataProvider(props) {
       .then(res=>{
         //console.log('refereshtoken=',res)
         setToken(res.data.accessToken)
-      }).catch(err=>toast.error(err.response.data.msg))
+      }).catch(err=>toast.error(err))
     };
 
     const initFetch=useCallback(()=>{
