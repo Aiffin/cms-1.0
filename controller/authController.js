@@ -21,7 +21,7 @@ const authController = {
                 password:encPassword
             })
 
-            const template =regTemplate(name,email)
+            const template = regTemplate(name,email)
             const subject =`Confirmation or registration with cms-v1-0`
             await sendMail(email,subject,template)
 

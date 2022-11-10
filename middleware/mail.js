@@ -17,7 +17,8 @@ const sendMail =async(to,subject,content)=>{
             to,
             subject,
             html:`<div>${content}</div>`
-        })
+        });
+        return info;
     }catch(err){
         return err.message
     }
