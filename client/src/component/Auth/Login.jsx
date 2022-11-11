@@ -25,7 +25,7 @@ function Login(props) {
                   console.log('after login =', res);
                   localStorage.setItem("loginToken", true)
                   toast.success(res.data.msg);
-                  // navigate('/')
+                  navigate('/')
                   window.location.href = "/"
               }).catch(err => {
                 toast.error(err.response.data.msg)

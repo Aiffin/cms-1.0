@@ -8,7 +8,7 @@ function ProtectedRoute() {
   return (
    <React.Fragment>
     {
-        token ? <Outlet/> : <Navigate to={'/'} />
+        token ? <Outlet/> : <Navigate to={'/login'} />
     }
    </React.Fragment>
   )
