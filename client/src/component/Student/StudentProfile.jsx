@@ -21,18 +21,50 @@ function StudentProfile() {
 
   const [user,setUser] =useState({
     name:"",
+    email:"",
     mobile:""
   })
+
   const [isEdit,setIsEdit]=useState(false)
 
   const readValue=(e)=>{
     const {name,value} = e.target;
     setUser({...user,[name]:value})
   }
-
+  
+const toggleEdit=()=>{
+  setIsEdit((prevState)=>!prevState)
+}
   useEffect(()=>{
     setImg(currentUser.image)
+    setUser(currentUser)
   },[img,currentUser])
+
+  const updateHandler=async(e)=>{
+    e.preventDefault()
+    try {
+      const updatedUser={
+        name:user.name,
+        email:user.email,
+        mobile:user.mobile
+       
+      }
+      console.log("updated data:",updatedUser)
+
+      //update db file
+      await axios.patch(`/api/v1/user/update`,updatedUser,{
+        headers:{
+          Authorization:token
+        }
+      });
+      toast.success("Profile data updated successfully")
+      window.location.href="/student/profile"
+ 
+
+    } catch (err) {
+      toast.error(err.data.response.msg)
+    }
+  }
 
   const handleUpload = async(e) => {
     e.preventDefault();
@@ -124,7 +156,7 @@ function StudentProfile() {
              <div className="card border-0">
               <div className="position-relative">
                 {
-                  img ? (<button onClick={handleDestroy} className='className="position-absolute top-0 start-100 bg-danger border border-light rounded-circle translate-middle pt-0 ps-2 pe-2 text-white'>x</button>):null
+                  img ? (<button onClick={handleDestroy} className="position-absolute top-0 start-100 bg-danger border border-light rounded-circle translate-middle pt-0 ps-2 pe-2 text-white">X</button>):null
                 }
                 {
                    img ? <img src={img ? img.url :""} alt="No image found" className='card-img' /> : 
@@ -146,31 +178,63 @@ function StudentProfile() {
             </div>
 
             <div className="col-md-8">
+           {
+            isEdit ? (
               <div className="card-body">
-                <h4 className="card-title text-center text-uppercase text-success">{currentUser.name}</h4>
+                  <div className="d-flex justify-content-between">
+              <h4 className="card-title text-center text-uppercase text-success">Update</h4>
+              <button onClick={toggleEdit} className="btn btn-danger"><i className="bi bi-x-circle"></i></button>
               </div>
               <hr />
-              <p className="card-text">
-                <strong>Email</strong>
-                <strong className="float-end text-danger">{currentUser.email}</strong>
-              </p>
-              <hr />
-              <p className="card-text">
-                <strong>Mobile</strong>
-                <strong className="float-end text-danger">{currentUser.mobile}</strong>
-              </p>
-              <hr />  <p className="card-text">
-                <strong>Role</strong>
-                <strong className="float-end text-danger">{currentUser.role}</strong>
-              </p>
-        
+              <form action="" autoComplete='off' onSubmit={updateHandler}>
+                <div className="form-group mt-2">
+                  <label htmlFor="name">Name</label>
+                  <input type="text" name="name" id="name" className='form-control' value={user.name} onChange={readValue} required />
+                </div>
+                <div className="form-group mt-2">
+                  <label htmlFor="email">Email</label>
+                  <input type="text" name="email" id="email" className='form-control' value={user.email} onChange={readValue}  required />
+                </div>
+                <div className="form-group mt-2">
+                  <label htmlFor="mobile">Mobile</label>
+                  <input type="text" name="mobile" id="mobile" className='form-control' value={user.mobile} onChange={readValue}  required />
+                </div>
+                <div className="form-group mt-2">
+                  <input type='submit' value="Submit" className="btn btn-warning"></input>
+                </div>
+              </form>
+              </div>
+            ):(
+              <div className="card-body">
+              <div className="d-flex justify-content-between">
+              <h4 className="card-title text-center text-uppercase text-success">{currentUser.name}</h4>
+              <button onClick={toggleEdit} className="btn btn-info"><i className="bi bi-pen"></i></button>
+              </div>
+            <hr />
+            <p className="card-text">
+              <strong>Email</strong>
+              <strong className="float-end text-danger">{currentUser.email}</strong>
+            </p>
+            <hr />
+            <p className="card-text">
+              <strong>Mobile</strong>
+              <strong className="float-end text-danger">{currentUser.mobile}</strong>
+            </p>
+            <hr />  <p className="card-text">
+              <strong>Role</strong>
+              <strong className="float-end text-danger">{currentUser.role}</strong>
+            </p>
+      
 
-            </div>
-            </div>
+          </div>
+            )
+           }
+            </div></div>
           </div>
         </div>
       </div>
     </div>
+
   )
 }
 

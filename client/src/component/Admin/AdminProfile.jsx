@@ -14,6 +14,7 @@ function AdminProfile() {
   const context = useContext(DataContext)
   const token= context.token
   const [currentUser] = context.data.authApi.currentUser
+
   const [img,setImg] = useState(false)
   const [loading,setLoading]=useState(false)
 
@@ -44,11 +45,12 @@ function AdminProfile() {
       })
 
       //update db file
-      await axios.patch(`/api/v1/user/update`,{
+      await axios.patch(`/api/v1/user/update`,{image:res.data},{
         headers:{
           Authorization:token
         }
       })
+      toast.success("Profile image updated successfully")
  
       //after upload
       setLoading(false);
@@ -68,6 +70,14 @@ function AdminProfile() {
             Authorization:token
           }
         })
+
+               // update db file
+               await axios.patch(`/api/v1/user/update`, 
+               { image: "https://storiavoce.com/wp-content/plugins/lightbox/images/No-image-found.jpg" }, {
+                 headers: { Authorization: token }
+               });
+               toast.success("Profile image Deleted successfully")
+
         setImg(false)
         setLoading(false)
         window.location.href="/admin/profile"
@@ -77,9 +87,7 @@ function AdminProfile() {
     }
   }
 
-  const submitHandler = async(e) => {
-
-  }
+ 
   return (
     <div className="container">
       <div className="row">
@@ -110,11 +118,7 @@ function AdminProfile() {
               </div>
              <div className="card-footer">
              {
-                img ? (
-                  <div className="form-group text-center">
-                    <button className="btn btn-success">Save Profile</button>
-                  </div>
-                ) :(
+                img ? null :(
                   <div className="form-group">
                     <input type="file" name={"profileImg"} id={"profileImg"} onChange={handleUpload} className="form-control"/>
                   </div>

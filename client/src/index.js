@@ -7,6 +7,7 @@ import DataProvider from './GlobalContext';
 
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap/dist/js/bootstrap.bundle"
+import "bootstrap-icons/font/bootstrap-icons.css"
 import "react-toastify/dist/ReactToastify.css"
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

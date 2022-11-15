@@ -4,7 +4,7 @@ const User = require('../model/userModel')
 const adminAuth = async (req,res,next) => {
     try {
         
-        const id=req.user._id
+        const id=req.user.id
 
         const extUser=await User.findById({ _id: id })
         //validate role

@@ -47,7 +47,7 @@ const authController = {
                   return res.status(StatusCodes.BAD_REQUEST).json({msg:"password aren't match"})
 
             //generate token
-            const accessToken = createAccessToken({_id:extUser._id})
+            const accessToken = createAccessToken({_id:extUser._id})//
 
             //save token in cookies
             res.cookie('refreshToken',accessToken,{
